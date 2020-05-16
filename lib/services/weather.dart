@@ -1,4 +1,33 @@
+import 'package:clima/services/networking.dart';
+import 'package:clima/services/location.dart';
+
+const apiKey = '6dce716aa03b3692a4b52f2279bba468';
+const openWeatherMapUrl = 'https://api.openweathermap.org/data/2.5/weather';
+
 class WeatherModel {
+
+  Future<dynamic> getCity(String cityName) async {
+
+    NetworkHelper networkHelper = NetworkHelper(
+        '$openWeatherMapUrl?q=$cityName&appid=$apiKey&units=metric');
+
+    var weatherData = await networkHelper.getData();
+
+    return weatherData;
+  }
+
+  Future<dynamic> getLocationWeather() async {
+    Location location = Location();
+    await location.getCurrentLocation();
+
+    NetworkHelper networkHelper = NetworkHelper(
+        '$openWeatherMapUrl?lat=${location.getLatitude()}&lon=${location.getLongitude()}&appid=$apiKey&units=metric');
+
+    var weatherData = await networkHelper.getData();
+
+    return weatherData;
+  }
+
   String getWeatherIcon(int condition) {
     if (condition < 300) {
       return '🌩';
